@@ -548,6 +548,8 @@ enum Decoration {
     DecorationFunctionFloatingPointModeINTEL = 6080,
     DecorationSingleElementVectorINTEL = 6085,
     DecorationCallableFunctionINTEL = 6087,
+    DecorationFuncParamKindINTEL = 9624,
+    DecorationFuncParamDescINTEL = 9625,
     DecorationMax = 0x7fffffff,
 };
 
