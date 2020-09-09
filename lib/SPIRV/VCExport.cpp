@@ -23,24 +23,7 @@
 #include "llvm/Support/MemoryBuffer.h"
 
 SPIRV::TranslatorOpts GetTranslatorOpts() {
-  std::map<std::string, ExtensionID> ExtensionNamesMap;
-#define _STRINGIFY(X) #X
-#define STRINGIFY(X) _STRINGIFY(X)
-#define EXT(X) ExtensionNamesMap[STRINGIFY(X)] = ExtensionID::X;
-#include "LLVMSPIRVExtensions.inc"
-#undef EXT
-#undef STRINGIFY
-#undef _STRINGIFY
-
-  SPIRV::TranslatorOpts::ExtensionsStatusMap ExtensionsStatus;
-  // Set the initial state:
-  //  - during SPIR-V consumption, assume that any known extension is allowed.
-  //  - during SPIR-V generation, assume that any known extension is disallowed.
-  //  - during conversion to/from SPIR-V text representation, assume that any
-  //    known extension is allowed.
-  for (const auto &It : ExtensionNamesMap)
-    ExtensionsStatus[It.second] = true;
-  SPIRV::TranslatorOpts Opts(VersionNumber::MaximumVersion, ExtensionsStatus);
+  SPIRV::TranslatorOpts Opts;
   Opts.setFPContractMode(SPIRV::FPContractMode::On);
   Opts.setDesiredBIsRepresentation(SPIRV::BIsRepresentation::SPIRVFriendlyIR);
   return Opts;
