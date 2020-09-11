@@ -20,7 +20,8 @@
 
 // Returns zero on success.
 extern "C" __EXPORT__ int spirv_read_verify_module(
-    const char *pIn, size_t InSz,
+    const char *pIn, size_t InSz, const uint32_t *SpecConstIds,
+    const uint64_t *SpecConstVals, unsigned SpecConstSz,
     void (*OutSaver)(const char *pOut, size_t OutSize, void *OutUserData),
     void *OutUserData, void (*ErrSaver)(const char *pErrMsg, void *ErrUserData),
     void *ErrUserData);

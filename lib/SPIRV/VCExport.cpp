@@ -22,16 +22,25 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/Support/MemoryBuffer.h"
 
-SPIRV::TranslatorOpts GetTranslatorOpts() {
+SPIRV::TranslatorOpts GetTranslatorOpts(const uint32_t *SpecConstIds,
+                                        const uint64_t *SpecConstVals,
+                                        unsigned SpecConstSz) {
   SPIRV::TranslatorOpts Opts;
   Opts.enableAllExtensions();
   Opts.setFPContractMode(SPIRV::FPContractMode::On);
   Opts.setDesiredBIsRepresentation(SPIRV::BIsRepresentation::SPIRVFriendlyIR);
+
+  // Add specialization constants
+  for (unsigned i = 0; i < SpecConstSz; ++i) {
+    Opts.setSpecConst(SpecConstIds[i], SpecConstVals[i]);
+  }
+
   return Opts;
 }
 
 int spirv_read_verify_module(
-    const char *pIn, size_t InSz,
+    const char *pIn, size_t InSz, const uint32_t *SpecConstIds,
+    const uint64_t *SpecConstVals, unsigned SpecConstSz,
     void (*OutSaver)(const char *pOut, size_t OutSize, void *OutUserData),
     void *OutUserData, void (*ErrSaver)(const char *pErrMsg, void *ErrUserData),
     void *ErrUserData) {
@@ -43,7 +52,8 @@ int spirv_read_verify_module(
   {
     llvm::Module *SpirM;
     std::string ErrMsg;
-    auto Opts = GetTranslatorOpts();
+    auto Opts = GetTranslatorOpts(SpecConstIds, SpecConstVals, SpecConstSz);
+
     // This returns true on success...
     bool Status = llvm::readSpirv(Context, Opts, IS, SpirM, ErrMsg);
     if (!Status) {
