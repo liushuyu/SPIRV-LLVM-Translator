@@ -24,6 +24,7 @@
 
 SPIRV::TranslatorOpts GetTranslatorOpts() {
   SPIRV::TranslatorOpts Opts;
+  Opts.enableAllExtensions();
   Opts.setFPContractMode(SPIRV::FPContractMode::On);
   Opts.setDesiredBIsRepresentation(SPIRV::BIsRepresentation::SPIRVFriendlyIR);
   return Opts;
